@@ -5,6 +5,7 @@ import {
   ListRefundValidator,
   ShowRefundValidator,
   SoftDeleteRefundValidator,
+  UpdateRefundValidator,
 } from '#validators/refund_validator'
 import drive from '@adonisjs/drive/services/main'
 import { DateTime } from 'luxon'
@@ -71,5 +72,22 @@ export class RefundService {
     await refund.save()
 
     return { message: `refund ${refund.title} deleted succesfully.` }
+  }
+
+  async update(payload: UpdateRefundValidator) {
+    const refund = await Refund.query()
+      .where('id', payload.params.id)
+      .whereNull('deleted_at')
+      .preload('receipt')
+      .firstOrFail()
+
+    refund.title = payload.title
+    refund.category = payload.category
+    refund.value = payload.value * 100
+    refund.date = payload.date
+
+    await refund.save()
+
+    return { refund }
   }
 }

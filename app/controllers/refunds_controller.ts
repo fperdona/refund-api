@@ -4,6 +4,7 @@ import {
   listRefundValidator,
   showRefundValidator,
   softDeleteRefundValidator,
+  updateRefundValidator,
 } from '#validators/refund_validator'
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -47,5 +48,14 @@ export default class RefundsController {
     const payload = await request.validateUsing(softDeleteRefundValidator)
 
     return this.refundService.softDelete(payload)
+  }
+
+  /**
+   * Update record
+   */
+  async update({ request }: HttpContext) {
+    const payload = await request.validateUsing(updateRefundValidator)
+
+    return this.refundService.update(payload)
   }
 }

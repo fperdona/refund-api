@@ -50,3 +50,17 @@ export const softDeleteRefundValidator = vine.compile(
 export type SoftDeleteRefundValidator = Awaited<
   ReturnType<typeof softDeleteRefundValidator.validate>
 >
+
+export const updateRefundValidator = vine.compile(
+  vine.object({
+    params: vine.object({
+      id: vine.string().uuid(),
+    }),
+    title: vine.string().trim().minLength(2),
+    category: vine.enum(['food', 'hosting', 'transport', 'services', 'other']),
+    value: vine.number().positive(),
+    date: vine.string().trim(),
+  })
+)
+
+export type UpdateRefundValidator = Awaited<ReturnType<typeof updateRefundValidator.validate>>
