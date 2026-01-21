@@ -23,6 +23,9 @@ export default class Refund extends BaseModel {
   })
   declare value: number
 
+  @column()
+  declare date: string | null
+
   @hasOne(() => Receipt)
   declare receipt: HasOne<typeof Receipt>
 

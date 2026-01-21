@@ -18,6 +18,8 @@ export class RefundService {
     const refunds = await Refund.query()
       .whereNull('deleted_at')
       .if(searchTerm, (query) => query.whereLike('title', `%${searchTerm}%`))
+      .if(payload.startDate, (query) => query.where('date', '>=', payload.startDate!))
+      .if(payload.endDate, (query) => query.where('date', '<=', payload.endDate!))
       .preload('receipt')
       .paginate(page, limit)
 

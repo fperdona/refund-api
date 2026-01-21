@@ -5,6 +5,7 @@ export const createRefundValidator = vine.compile(
     title: vine.string().trim().minLength(2),
     category: vine.enum(['food', 'hosting', 'transport', 'services', 'other']),
     value: vine.number().positive(),
+    date: vine.string().trim(),
     receipt: vine
       .string()
       .exists({ table: 'receipts', column: 'id' })
@@ -31,6 +32,8 @@ export const listRefundValidator = vine.compile(
   vine.object({
     page: vine.number().positive().optional(),
     q: vine.string().trim().optional(),
+    startDate: vine.string().trim().optional(),
+    endDate: vine.string().trim().optional(),
   })
 )
 
