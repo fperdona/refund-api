@@ -21,6 +21,7 @@ export class RefundService {
       .if(searchTerm, (query) => query.whereLike('title', `%${searchTerm}%`))
       .if(payload.startDate, (query) => query.where('date', '>=', payload.startDate!))
       .if(payload.endDate, (query) => query.where('date', '<=', payload.endDate!))
+      .orderBy('date', 'desc')
       .preload('receipt')
       .paginate(page, limit)
 
@@ -86,7 +87,32 @@ export class RefundService {
     refund.value = payload.value * 100
     refund.date = payload.date
 
+    if (payload.receipt) {
+      const newReceipt = await Receipt.findOrFail(payload.receipt)
+      const localDrive = drive.use('fs')
+
+      // Remove o receipt antigo
+      if (refund.receipt) {
+        const oldReceipt = refund.receipt
+        await localDrive.delete(oldReceipt.path)
+        await oldReceipt.delete()
+      }
+
+      // Associa o novo receipt
+      const source = newReceipt.path
+      const destination = `uploads/${newReceipt.filename}.${newReceipt.extname}`
+
+      newReceipt.path = destination
+
+      await Promise.all([
+        localDrive.moveFromFs(source, destination),
+        refund.related('receipt').save(newReceipt),
+        newReceipt.save(),
+      ])
+    }
+
     await refund.save()
+    await refund.load('receipt')
 
     return { refund }
   }

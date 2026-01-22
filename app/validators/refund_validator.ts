@@ -61,6 +61,10 @@ export const updateRefundValidator = vine.compile(
     category: vine.enum(['food', 'hosting', 'transport', 'services', 'other']),
     value: vine.number().positive(),
     date: vine.string().trim(),
+    receipt: vine
+      .string()
+      .exists({ table: 'receipts', column: 'id' })
+      .optional(),
   })
 )
 
