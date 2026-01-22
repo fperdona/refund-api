@@ -12,7 +12,7 @@ import { DateTime } from 'luxon'
 
 export class RefundService {
   async all(payload: ListRefundValidator) {
-    const limit = 10
+    const limit = payload.limit ?? 10
     const page = payload.page ?? 1
     const searchTerm = payload.q
 

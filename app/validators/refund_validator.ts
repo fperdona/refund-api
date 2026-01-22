@@ -31,6 +31,7 @@ export type ShowRefundValidator = Awaited<ReturnType<typeof showRefundValidator.
 export const listRefundValidator = vine.compile(
   vine.object({
     page: vine.number().positive().optional(),
+    limit: vine.number().positive().max(1000).optional(),
     q: vine.string().trim().optional(),
     startDate: vine.string().trim().optional(),
     endDate: vine.string().trim().optional(),
